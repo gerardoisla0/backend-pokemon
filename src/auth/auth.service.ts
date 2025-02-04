@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { LoginAuthDto } from './dto/login-auth.dto';
 import { FirebaseService } from '../firebase/firebase.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/auth.entity';
 import { Repository } from 'typeorm';
+import { VerifyAuthDto } from './dto/verify-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,8 +28,22 @@ export class AuthService {
     return useRegister;
 
   }
-  login(loginAuthDto: LoginAuthDto) {
-    return 'This action adds a new auth';
+
+  async verify(verifyAuthDto: VerifyAuthDto) {
+    const token = await this.firebaseService.verify(verifyAuthDto.token);
+    if(!token)
+      throw new UnauthorizedException('Security Token are not valid');
+    
+    const user = await this.userRepository.findOne({
+      where: { email: verifyAuthDto.email},
+      select: { email: true, firebaseUUID: true, fullName: true}
+    });
+
+    if (!user)
+      throw new UnauthorizedException('Credentials are not valid');
+
+    console.log(user);
+    return user;
   }
 
 }

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import * as admin from 'firebase-admin';
+import { decode } from 'punycode';
 
 @Injectable()
 export class FirebaseService {
@@ -21,8 +22,14 @@ export class FirebaseService {
     }
   }
 
-  login() {
-    return `This action returns all firebase`;
+  async verify(token:string): Promise<any> {
+    try{
+      const decodeToken = await admin.auth().verifyIdToken(token);
+      console.log(decodeToken);
+      return decodeToken;
+    }catch(error){
+      this.handleErrors(error);
+    }
   }
 
   private handleErrors(error: any){
