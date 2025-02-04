@@ -32,6 +32,17 @@ export class FirebaseService {
     }
   }
 
+  async sendNotification(token:string, payLoad: any) {
+    try{
+      await admin.messaging().send({
+        token: token,
+        notification: payLoad
+      });
+    }catch(error){
+      this.handleErrors(error);
+    }
+  }
+
   private handleErrors(error: any){
     if(error.code === 'auth/email-already-exists'){
       throw new BadRequestException(error.errorInfo.message);
