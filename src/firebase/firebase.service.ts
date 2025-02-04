@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import * as admin from 'firebase-admin';
-import { decode } from 'punycode';
 
 @Injectable()
 export class FirebaseService {
@@ -41,6 +40,20 @@ export class FirebaseService {
     }catch(error){
       this.handleErrors(error);
     }
+  }
+
+  async sendMessage(username : string, message: string, timestamp: number ) {
+    const messageRef = admin.database().ref('messages').push();
+
+    const newMessage = {
+      user: username,
+      message: message,
+      timestamp: timestamp
+    };
+
+    await messageRef.set(newMessage);
+    
+    return { status: 'success', message: 'Message sent' };
   }
 
   private handleErrors(error: any){
