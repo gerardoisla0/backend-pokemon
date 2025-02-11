@@ -25,4 +25,8 @@ export class NotificationService {
     return this.firebaseService.sendMessage(chatNotificationDto.user,chatNotificationDto.message, chatNotificationDto.timestamp);
   }
 
+  async messagefs(chatNotificationDto: ChatNotificationDto) {
+    return this.firebaseService.sendMessageFs(chatNotificationDto.user,chatNotificationDto.message, chatNotificationDto.timestamp);
+  }
+
 }

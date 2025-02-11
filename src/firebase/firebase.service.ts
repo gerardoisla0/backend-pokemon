@@ -56,6 +56,18 @@ export class FirebaseService {
     return { status: 'success', message: 'Message sent' };
   }
 
+  async sendMessageFs(username : string, message: string, timestamp: number ) {
+
+    const messageRef = admin.firestore().collection('messages');
+    const newMessage = {
+      user: username,
+      message: message,
+      timestamp: timestamp
+    };
+    await messageRef.add(newMessage);
+    return { status: 'success', message: 'Message sent' };
+  }
+
   private handleErrors(error: any){
     if(error.code === 'auth/email-already-exists'){
       throw new BadRequestException(error.errorInfo.message);

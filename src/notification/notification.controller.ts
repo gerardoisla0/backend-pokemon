@@ -17,5 +17,9 @@ export class NotificationController {
     return this.notificationService.message(chatNotificationDto);
   }
 
+  @Post('fs')
+  messagefs(@Body() chatNotificationDto: ChatNotificationDto) {
+    return this.notificationService.messagefs(chatNotificationDto);
+  }
 
 }
